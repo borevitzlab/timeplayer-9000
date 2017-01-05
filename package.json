@@ -1,0 +1,43 @@
+{
+  "name": "timeplayer-9000",
+  "version": "0.0.1",
+  "description": "A javascript timelapse player. Aims to be html5 and ECMAScript5 compatible, with minimal dependencies",
+  "main": "index.js",
+  "scripts": {
+    "rollup": "rollup -c && cp build/rolled.js dist/timeplayer-9000.rld.js"
+  },
+
+  "keywords": ["timelapse"],
+  "author": "Gareth Dunstone",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "cssnano": "^3.9.1",
+    "rollup": "0.36",
+    "google-closure-compiler": "^20161201.0.0",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-commonjs": "^6.0.0",
+    "rollup-plugin-inject": "^2.0.0",
+    "rollup-plugin-json": "^2.1.0",
+    "rollup-plugin-postcss": "^0.2.0",
+    "jquery": "^3.1.1",
+    "bootstrap": "^4.0.0-alpha.5",
+    "moment": "^2.17.1",
+    "openseadragon": "^2.2.1",
+    "d3-axis": "^1.0.4",
+    "d3-brush": "^1.0.3",
+    "d3-collection": "^1.0.2",
+    "d3-drag": "^1.0.2",
+    "d3-interpolate": "^1.1.2",
+    "d3-request": "^1.0.3",
+    "d3-scale": "^1.0.4",
+    "d3-selection": "^1.0.0",
+    "d3-selection-multi": "^1.0.0",
+    "d3-shape": "^1.0.4",
+    "d3-time": "^1.0.4",
+    "d3-time-format": "^2.0.3",
+    "d3-timer": "^1.0.3",
+    "d3-transition": "^1.0.3"
+  }
+}
