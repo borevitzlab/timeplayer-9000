@@ -105,6 +105,21 @@ you are doing with it and are open to contribution!
 Also please include a reference to this page or the git repo somewhere 
 in your project.
 
+## Development/contributing.
+
+You should be able to get started developing this project by cloning and 
+running `npm install`.
+
+Building the rolled, compiled and minified dist files uses an npm script 
+and a grunt task.
+
+```bash
+$ npm run rollup
+$ grunt default
+```
+
+Please contact us if you are interested in developing for this project.
+
 ## Credits/Extra links
 
 This code was developed for the TraitCapture project at ANU.
