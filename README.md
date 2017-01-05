@@ -63,8 +63,8 @@ var player = Timeplayer({
     // multiple options are available for start and end dates
     // they are valued like posix_start > start_datetime > ts_start if multiple provided
     // these rely on timestreamParse...
-    ts_start: 2017_01_01_12_00_00_00,
-    ts_end: 2017_01_20_12_00_00_00,
+    ts_start: "2017_01_01_12_00_00_00",
+    ts_end: "2017_01_20_12_00_00_00",
     
     // these need to be able to be accurately parsed by the moment.js library
     // iso8601 is a great idea...
