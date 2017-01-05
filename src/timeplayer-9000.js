@@ -929,18 +929,19 @@ export function TimePlayer(options) {
             })
             .on("click.cb", (d)=>d.clickedCallback(d));
 
-        var snapButton = visibleDesktopDiv.selectAll()
-            .data([snapButtonData]).enter()
-            .append("div")
-            .classes({"form-group": true, "dropup": true})
-            .styles({
-                "display": 'inline-block',
-                "margin": "5px 3px"
-            })
-            .append("button")
-            .makeButton().makeTooltip()
-            .on("click", (d)=>d.clickedCallback(d))
-            .property("type", "button").text("None");
+        // TODO: snap button is super broken.
+        // var snapButton = visibleDesktopDiv.selectAll()
+        //     .data([snapButtonData]).enter()
+        //     .append("div")
+        //     .classes({"form-group": true, "dropup": true})
+        //     .styles({
+        //         "display": 'inline-block',
+        //         "margin": "5px 3px"
+        //     })
+        //     .append("button")
+        //     .makeButton().makeTooltip()
+        //     .on("click", (d)=>d.clickedCallback(d))
+        //     .property("type", "button").text("None");
 
         var dropDownMenus = visibleDesktopDiv.selectAll()
             .data([shareDropdownData]).enter()
@@ -1745,10 +1746,13 @@ export function TimePlayer(options) {
     var getNewParams = () => {
         var point = this.viewer.viewport.viewportToImageCoordinates(this.viewer.viewport.getBounds().getCenter());
         // var point = this.viewer.viewport.getBounds().getCenter();
+        var [x0, x1] = brushSelection(this.bottomBrushGroup.node()),
+            [minExtent, maxExtent] = [x0, x1].map(this.botXscale.invert);
+
         var params = {
             "i": moment(this.timeToIndex.invert(this.viewer.currentPage())).format(this.timestreamParse),
-            "e0": this.timeToIndex(this.bottomBrush.extent()[0]),
-            "e1": this.timeToIndex(this.bottomBrush.extent()[1]),
+            "e0": this.timeToIndex(minExtent),
+            "e1": this.timeToIndex(maxExtent),
             "x": parseInt(point.x),
             "y": parseInt(point.y),
             "z": this.viewer.viewport.viewportToImageZoom(this.viewer.viewport.getZoom(false)),
