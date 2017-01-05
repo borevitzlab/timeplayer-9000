@@ -14,7 +14,7 @@ The two main things that need to be supplied are a selector to use on
 the page and source for configuration (which can be provided as options).
 
 
-```
+```javascript
 var player = Timeplayer({
     // your selector on the page
     selector: "#timeplayer",
