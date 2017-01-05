@@ -1,6 +1,6 @@
 #TimePlayer-9000
 
-This project aims to be a fully featured html/javascript timelapse 
+This project aims to be a fully featured HTML/ECMAScript5/6 timelapse 
 viewer/player, while only depending on a small number of libraries, and 
 keeping the packaged product easy to deploy in new environments.
 
@@ -9,9 +9,15 @@ In `dist` are the closure compiled, minified files:
 
 The compiled js file should inline css styles into the \<head\> tags.
 
-To instantiate a viewer one needs to supply options to the timeplayer.
+Drag and drop functionality, while experimental is considered relatively 
+stable, and JSON files downloaded from the player are intended to be 
+dropped into the player.
+
+To instantiate a viewer on a page one needs to supply options to 
+the timeplayer object.
 The two main things that need to be supplied are a selector to use on 
-the page and source for configuration (which can be provided as options).
+the page and source for configuration (which can be provided as 
+options).
 
 
 ```javascript
@@ -90,3 +96,31 @@ var player = Timeplayer({
     url: "http://your-url.com/ExampleTimelapseConfig.xml"
 });
 ```
+
+## Usage Guidelines
+
+Please contact us when you use this project, we would love to hear what 
+you are doing with it and are open to contribution! 
+
+Also please include a reference to this page or the git repo somewhere 
+in your project.
+
+## Credits/Extra links
+
+This code was developed for the TraitCapture project at ANU.
+
+This project makes significant use of the following libraries and 
+resources:
+
+* [d3.js v4](https://d3js.org)
+* [bootstrap v4 alpha](https://v4-alpha.getbootstrap.com)
+* [openseadragon](openseadragon.github.io)
+* [moment.js](http://momentjs.com)
+* [github octicons](https://octicons.github.com/)
+
+We also develop 
+[spc-eyepi](http://borevitzlab.github.io/spc-eyepi/) for capture 
+of timelapses.
+
+
+
