@@ -1140,7 +1140,7 @@ export function TimePlayer(options) {
          * Triggers preload of the images at the current time resolution ordered from the time cursor out.
          * Uses timer() to await the jobs so as to not block the browser.
          */
-
+        console.log("preload start");
         var [x0, x1] = brushSelection(this.bottomBrushGroup.node());
         var [minExtent, maxExtent] = [x0, x1].map(this.botXscale.invert);
 
@@ -1161,6 +1161,7 @@ export function TimePlayer(options) {
         imagesToLoad.sort(function (a, b) {
             return Math.abs(moment(a.datetime).diff(middleMoment)) - Math.abs(moment(b.datetime).diff(middleMoment));
         });
+        console.log("image loading...");
         // var currentLevel = this.viewer.viewport.viewportToImageZoom(this.viewer.viewport.getZoom())<0.5?0:1;
         imagesToLoad.forEach((d) => {
             this.viewer.imageLoader.addJob({
@@ -1174,7 +1175,6 @@ export function TimePlayer(options) {
                 }
             });
         });
-
         var t = timer(() => {
             select("#loadingStop").attr("offset", () => {
                 return Math.floor((this.viewer.imageLoader.jobsInProgress / this.preloadAmount) * 100) + "%";
@@ -1525,8 +1525,8 @@ export function TimePlayer(options) {
          * updates the gradients (lines) on the timeline to represent the current load state of images.
          */
         this.topLineGradientStops.data(this.gradientData, (d) => d.index)
+            // .transition()
             .attr("offset", (d) =>this.offsetScale(d.index))
-            .transition()
             .attr("stop-opacity", (d) => {
                 if (!isDefined(this.errorData[d.datapoint])) return 0.3;
                 return this.errorData[d.datapoint].error ? 0.0 : 1.0;
@@ -1534,6 +1534,7 @@ export function TimePlayer(options) {
 
         // rather than break the path, make the gradient stop opacity 0.
         this.botLineGradientStops.data(this.gradientData, (d) => d.index)
+            // .transition()
             .attr("offset", (d) => this.offsetScale(d.index))
             .attr("stop-opacity", (d) => {
                 // var idx = this.timeToIndex(this.botXscale.invert(d.loresd));
@@ -2314,7 +2315,8 @@ export function TimePlayer(options) {
         this.sliderTimer = timer(sliderTween);
         var sliderDragged = (x) => {
             this.sliderTarget = x;
-            this.sliderTimer.restart(sliderTween);
+            sliderTween();
+            // this.sliderTimer.restart(sliderTween);
         };
 
         this.clipPath = this.svg.append("defs").append("clipPath")
