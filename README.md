@@ -13,15 +13,40 @@ Drag and drop functionality, while experimental is considered relatively
 stable, and JSON files downloaded from the player are intended to be 
 dropped into the player.
 
+## Usage Guidelines
+
+Please contact us when you use this project, we would love to hear what 
+you are doing with it and are open to contribution! 
+
+Also please include a reference to this page or the git repo somewhere 
+in your project.
+
+## Development/contributing.
+
+You should be able to get started developing this project by cloning and 
+running `npm install`.
+
+Building the rolled, compiled and minified dist files uses an npm script 
+and a grunt task.
+
+```bash
+$ npm run rollup
+$ grunt default
+```
+
+Please contact us if you are interested in developing for this project.
+
+## Usage
+
 To instantiate a viewer on a page one needs to supply options to 
-the timeplayer object.
+a timeplayer object.
 The two main things that need to be supplied are a selector to use on 
 the page and source for configuration (which can be provided as 
 options).
 
 
 ```javascript
-var player = Timeplayer({
+var player = TimePlayer({
     // your selector on the page
     selector: "#timeplayer",
     
@@ -96,29 +121,6 @@ var player = Timeplayer({
     url: "http://your-url.com/ExampleTimelapseConfig.xml"
 });
 ```
-
-## Usage Guidelines
-
-Please contact us when you use this project, we would love to hear what 
-you are doing with it and are open to contribution! 
-
-Also please include a reference to this page or the git repo somewhere 
-in your project.
-
-## Development/contributing.
-
-You should be able to get started developing this project by cloning and 
-running `npm install`.
-
-Building the rolled, compiled and minified dist files uses an npm script 
-and a grunt task.
-
-```bash
-$ npm run rollup
-$ grunt default
-```
-
-Please contact us if you are interested in developing for this project.
 
 ## Credits/Extra links
 
