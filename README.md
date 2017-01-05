@@ -83,10 +83,10 @@ var player = Timeplayer({
     period_in_minutes: 300*60,
     period_in_hours: 300*60*60,
     
-    // ... use a url config source (that provides the same parameters as above)
-    url: http://your-url.com/config.json
+    // ... or use a url config source (that provides the same options as above)
+    url: "http://your-url.com/ExampleTimelapseConfig.json",
     
     // also supports xml (albeit with a little bit different parameters, see xml support
-    url: http://your-url.com/config.xml
+    url: "http://your-url.com/ExampleTimelapseConfig.xml"
 });
 ```
