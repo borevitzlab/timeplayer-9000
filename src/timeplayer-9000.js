@@ -13,6 +13,8 @@ import './slider.css';
 import {csv, text, tsv, json, request} from 'd3-request';
 import {scaleLinear, scaleTime, scaleOrdinal, scaleBand, schemeCategory10} from 'd3-scale';
 import {map, values, keys, entries} from 'd3-collection';
+import * as easing from 'd3-ease';
+
 import * as time from 'd3-time';
 import {drag} from 'd3-drag';
 
@@ -1320,6 +1322,7 @@ export function TimePlayer(options) {
         // updateSliderX(this.topXscale(time), index);
         // smooth slider
         updateSliderX(this.topXscale(this.timeToIndex.invert(input)), index);
+        updateSliderColors(index);
         // q.defer(updateSliderX, this.topXscale(time));
     };
     var updatePlayState = () => {
@@ -1427,7 +1430,6 @@ export function TimePlayer(options) {
          */
         var dat = this.errorData[index];
         this.topAxisSliderHandle
-            .transition().duration(100)
             .attr("fill", (d) => hsl(this.colorSelect(this.name)))
             .attr("fill-opacity", (d) => !isDefined(dat) ? 0.365 : (dat.error ? 0 : 0.8));
     };
@@ -1445,9 +1447,12 @@ export function TimePlayer(options) {
             index = this.timeToIndex(time);
         }
 
-        updateSliderColors(index);
-        this.topAxisSliderHandle.attr("cx", topXvalue);
-        this.topAxisSliderTimeLine.attrs({"x1": topXvalue, "x2": topXvalue});
+        this.topAxisSliderHandle.transition().ease(easing.easePolyOut)
+            .attr("cx", topXvalue);
+
+        this.topAxisSliderTimeLine.transition().ease(easing.easePolyOut)
+            .attr("x1",topXvalue).attr("x2", topXvalue);
+
     };
     var updateAxisScales = () => {
         /**
@@ -1688,7 +1693,6 @@ export function TimePlayer(options) {
         return result;
     };
     var loadParamsFromObject = (params) => {
-        var transitionSettings = (transition) => transition.duration(1000).ease("elastic");
 
         if (isDefined(params.x) &&
             isDefined(params.y) &&
@@ -2312,10 +2316,11 @@ export function TimePlayer(options) {
         };
         this.sliderActual = 0;
         this.sliderTarget = 0;
-        this.sliderTimer = timer(sliderTween);
+        // this.sliderTimer = timer(sliderTween);
         var sliderDragged = (x) => {
-            this.sliderTarget = x;
-            sliderTween();
+            var t = this.topXscale.invert(x);
+            updatePlayer(t);
+            // this.sliderTarget = x;
             // this.sliderTimer.restart(sliderTween);
         };
 
