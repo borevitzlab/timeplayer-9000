@@ -1,6 +1,5 @@
 
 input[type=range] {
-    align-items: flex-start;
     -webkit-appearance: none;
     width: 100%;
     font-weight: 400;
@@ -18,7 +17,6 @@ input[type=range] {
     border-radius: 0.25rem;
     margin: 0;
     text-transform: none;
-
 }
 
 input[type=range]:focus {

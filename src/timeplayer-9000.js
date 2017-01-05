@@ -7,11 +7,9 @@ import 'openseadragon';
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
 import moment from '../node_modules/moment/src/moment';
 import Dropdown from '../node_modules/bootstrap/js/src/dropdown';
+
 import octicons from "./octicons-lite/octicons";
 import './slider.css';
-
-window.octicons = octicons;
-
 import {csv, text, tsv, json, request} from 'd3-request';
 import {scaleLinear, scaleTime, scaleOrdinal, scaleBand, schemeCategory10} from 'd3-scale';
 import {map, values, keys, entries} from 'd3-collection';
@@ -34,7 +32,7 @@ import {transition} from 'd3-transition';
 
 // hijack selection
 selection.prototype.dropdown = function () {
-    new Dropdown();
+    new Dropdown(this.node());
     return this;
 };
 
@@ -188,7 +186,7 @@ export function TimePlayer(options) {
         timelineWidth: window.innerWidth,
         timelineHeight: 110,
         axisHeight: 34,
-        iconSize: 20
+        iconSize: 22
     };
 
     this.loaded = false;
@@ -836,7 +834,7 @@ export function TimePlayer(options) {
         };
 
         selection.prototype.makeButton = function () {
-            return this.classes({"btn": true, "btn-default": true});
+            return this.classes({"btn": true, 'btn-sm':true, "btn-default": true});
         };
 
         selection.prototype.makeTooltip = function () {
@@ -928,8 +926,8 @@ export function TimePlayer(options) {
                 select(this).setIcon();
             })
             .on("click.cb", (d)=>d.clickedCallback(d));
-
         // TODO: snap button is super broken.
+
         // var snapButton = visibleDesktopDiv.selectAll()
         //     .data([snapButtonData]).enter()
         //     .append("div")
@@ -964,7 +962,9 @@ export function TimePlayer(options) {
             .appendOcticon();
 
         dropDownMenus
-            .append("ul").classed("dropdown-menu", true)
+            .append("ul")
+            .attr("role","menu")
+            .classed("dropdown-menu", true)
             .styles({
                 "min-width": 0,
                 "background-color": "transparent",

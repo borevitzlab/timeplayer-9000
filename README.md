@@ -46,7 +46,7 @@ options).
 
 
 ```javascript
-var player = TimePlayer({
+var player = TimePlayer.TimePlayer({
     // your selector on the page
     selector: "#timeplayer",
     
