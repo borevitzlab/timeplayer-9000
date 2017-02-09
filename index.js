@@ -1,2 +1,1 @@
-export {TimePlayer} from "./src/timeplayer-9000";
-
+export {ES6Player} from "./src/timeplayer-9000";

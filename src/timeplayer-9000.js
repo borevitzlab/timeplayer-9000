@@ -416,6 +416,7 @@ export class ES6Player {
                 this.snapping = d.choices.keys()[target];
 
                 select(event.srcElement).text(this.snapping);
+                event.stopPropagation();
                 if (this.snapping == "None")
                     this.bottomBrushGroup.transition()
                         .call(this.bottomBrush.move, this.originalExtent);
@@ -466,7 +467,6 @@ export class ES6Player {
                 let sourceEle = event.target;
                 let speed = sourceEle.value;
                 this.speedMultiplier = parseFloat(speed);
-                this.debug(speed);
                 this.updateSpeedSliderTooltips();
             },
             detents: [
@@ -1041,20 +1041,20 @@ export class ES6Player {
                 select(this).setIcon();
             })
             .on("click.cb", (d) => d.clickedCallback(d));
-        // TODO: snap button is super broken.
 
-        // let snapButton = visibleDesktopDiv.selectAll()
-        //     .data([snapButtonData]).enter()
-        //     .append("div")
-        //     .classes({"form-group": true, "dropup": true})
-        //     .styles({
-        //         "display": 'inline-block',
-        //         "margin": "5px 3px"
-        //     })
-        //     .append("button")
-        //     .makeButton().makeTooltip()
-        //     .on("click", (d)=>d.clickedCallback(d))
-        //     .property("type", "button").text("None");
+        let snapButton = visibleDesktopDiv.selectAll()
+            .data([this.snapButtonData]).enter()
+            .append("div")
+            .classes({"form-group": true, "dropup": true})
+            .styles({
+                "display": 'inline-block',
+                "margin": "5px 3px"
+            })
+            .append("button")
+            .makeButton().makeTooltip()
+            .on("click", (d)=>d.clickedCallback(d))
+            .style("height", "32px")
+            .property("type", "button").text("None");
 
         let dropDownMenus = visibleDesktopDiv.selectAll()
             .data([this.shareDropdownData]).enter()
@@ -1542,11 +1542,14 @@ export class ES6Player {
                     if (event.selection === null && brushSelection(this.bottomBrushGroup.node()) === null) {
                         let v = this.snapping == "None" ? "Month" : this.snapping;
                         this.snapTo(v);
-                    } else {
+                    }
+                    else {
+                        this.debug(event.sourceEvent.type, event);
+                        // if(event.sourceEvent.type != "click")
                         this.snapTo(null);
                     }
                 }
-            })
+            });
 
         this.bottomBrushGroup = this.svg.append("g")
             .attrs({
@@ -1863,11 +1866,12 @@ export class ES6Player {
         if (targetSnapping !== null) func = this.snapButtonData.choices.get(targetSnapping);
         this.log("Snapping to " + String(targetSnapping || this.snapping));
 
+        if (isDefined(event.sourceEvent) && event.sourceEvent.type === 'end') return;
         if (!isDefined(func) || func == "None") return;
+
 
         let brushArea = brushSelection(this.bottomBrushGroup.node());
         if (brushArea === null && event.sourceEvent) brushArea = [event.sourceEvent.layerX, event.sourceEvent.layerX+1];
-
         let [x0, x1] = brushArea,
             [minExtent, maxExtent] = [x0, x1].map(this.botXscale.invert),
             [minRounded, maxRounded] = [minExtent, maxExtent].map(func.round);
@@ -1878,8 +1882,10 @@ export class ES6Player {
             minRounded = func.floor(minExtent);
             maxRounded = func.ceil(maxExtent);
         }
+
+
         this.bottomBrush.move(this.bottomBrushGroup, [x0, x1]);
-        this.bottomBrushGroup.transition().duration(1000)
+        this.bottomBrushGroup.transition().duration(500)
             .call(this.bottomBrush.move, [minRounded, maxRounded].map(this.botXscale))
             .call(this.updateAxisScales);
 
