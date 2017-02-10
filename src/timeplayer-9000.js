@@ -500,30 +500,34 @@ export class ES6Player {
         // parse options into 'this'
         this.parseOptsIntoMe(options);
         this.createViewer();
+        this.addListeners();
+
         if (isDefined(options.url)) {
             let callback = (err, data) => this.estimateTimelineData(data);
-            if (options.url.split("?")[0].endsWith("json"))
-                json(options.url, callback);
-            else if (options.url.includes("xml"))
-                xml(options.url, (err, data) => callback(null, this.timecamFormatToTimestreamFormat(this.xmlToJson(data))));
-            else
-                this.error("malformed url (supporting .json and .jsonp)"); return;
 
-        }
-        else if (isDefined(options.jsonString)) {
+            if (options.url.split("?")[0].endsWith("json")){
+                json(options.url, callback);
+            }
+            else if (options.url.includes("xml")){
+                xml(options.url, (err, data) => callback(null, this.timecamFormatToTimestreamFormat(this.xmlToJson(data))));
+            }
+            else{
+                this.error("malformed url (supporting .json and .jsonp)");
+                return;
+            }
+        } else if (isDefined(options.jsonString)) {
             this.estimateTimelineData(JSON.parse(options.jsonString));
         }
-
-
-        this.addListeners();
     }
 
 
     addListeners() {
-        // add handler for resize
-        select(window).on("resize", () => this.rescaleTimeline());
+        this.log("Adding listeners...");
         // add fullscreen resize handler.
         this.viewer.addHandler("full-screen", () => this.rescaleTimeline());
+
+        // add handler for resize
+        select(window).on("resize", ()=>this.rescaleTimeline());
 
         // add document listner for dragdrop.
         jQuery(document).on('drag dragstart dragend dragover dragenter dragleave drop', this.selector, (event) => {
@@ -2091,7 +2095,7 @@ export class ES6Player {
 
     rescaleTimeline() {
         select("#openseadragon-this.viewer").transition().style("height", String(this.getRemainingHeight() - 10) + "px");
-
+        this.log("rescaling");
         // dimensions.timelineWidth = jQuery("#timeplayer-timeline").width() || jQuery(window).width();
 
         // if (this.viewer.isFullPage()) {
