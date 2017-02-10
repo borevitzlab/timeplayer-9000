@@ -10,7 +10,7 @@ import Dropdown from '../node_modules/bootstrap/js/src/dropdown';
 
 import octicons from "./octicons-lite/octicons";
 import './slider.css';
-import {csv, text, tsv, json, request} from 'd3-request';
+import {csv, text, tsv, xml, json, request} from 'd3-request';
 import {scaleLinear, scaleTime, scaleOrdinal, scaleBand, schemeCategory10} from 'd3-scale';
 import {map, values, keys, entries} from 'd3-collection';
 import * as easing from 'd3-ease';
@@ -497,6 +497,7 @@ export class ES6Player {
             } else if (options.url.includes("xml")) {
                 xml(options.url, (err, data) => {
                     let timestreamConf = this.timecamFormatToTimestreamFormat(this.xmlToJson(data));
+                    this.debug(timestreamConf);
                     this.estimateTimelineData(timestreamConf);
                 });
             } else {
@@ -591,6 +592,7 @@ export class ES6Player {
          */
 
         this.log("Estimating timeline data for ", optionData);
+
         let start, end;
         if (isDefined(optionData.period)) optionData.period = optionData.period * 1;
         else if (isDefined(optionData.period_in_milliseconds)) optionData.period = optionData.period_in_milliseconds / 1000;
@@ -612,14 +614,34 @@ export class ES6Player {
             // bootbox.alert("No webroot was provided for this timestream.");
             this.error("FATAL ERROR! No webroot! Where are my images?!?!?");
         }
-
-
         // fixes double slashes and removes trailing slash
         let fixSlashes = (v) => typeof v === "string" ? v.replace(/([^:])\/\/+/g, "$1/").replace(/\/+$/, "") : v;
-        optionData.webroot_hires = fixSlashes(optionData.webroot_hires);
+
         // assign webroot to webroot_hires if webroot isnt defined.
-        optionData.webroot = isDefined(optionData.webroot) ? fixSlashes(optionData.webroot) : optionData.webroot_hires;
-        if (typeof optionData.webroot_hires === "string") this.playControlsButtonsData.hiresButton = this.hiresButton;
+        optionData.webroot = isDefined(optionData.webroot) ? fixSlashes(optionData.webroot) : fixSlashes(optionData.webroot_hires);
+        optionData.filename = isDefined(optionData.filename)?optionData.filename: optionData.filename_hires;
+
+
+        if (!isDefined(optionData.filename) && !isDefined(optionData.filename_hires)) {
+            // bootbox.alert("No webroot was provided for this timestream.");
+            this.error("FATAL ERROR! No filename! Where are my images?!?!?");
+        }
+
+        if (typeof optionData.webroot_hires === "string" && optionData.webroot != optionData.webroot_hires) this.playControlsButtonsData.hiresButton = this.hiresButton;
+
+        let getFilename = (fn, wr) => isDefined(fn) ? fn : wr.split("/").pop();
+
+        this.mapObj = {
+            "webroot": optionData.webroot,
+            "filename": getFilename(optionData.filename, optionData.webroot),
+            "extension": optionData.image_type
+        };
+
+        if(isDefined(optionData.webroot_hires)&&isDefined(optionData.filename_hires)){
+            this.mapObj.filename_hires = getFilename(optionData.filename_hires, optionData.webroot_hires);
+            this.mapObj.webroot_hires = optionData.webroot_hires;
+        }
+
 
         // get start date
         if (isDefined(optionData.ts_start)) {
@@ -691,16 +713,6 @@ export class ES6Player {
 
         let rangeStr = "Start: " + optionData.start.format(this.humanFormat) + "\n End: " + optionData.end.format(this.humanFormat);
         jQuery("#timeplayer-datetime-info").attr('title', rangeStr);
-
-        let getFilename = (fn, wr) => isDefined(fn) ? fn : wr.split("/").pop();
-
-        this.mapObj = {
-            "webroot": optionData.webroot,
-            "filename": getFilename(optionData.filename, optionData.webroot),
-            "webroot_hires": optionData.webroot_hires,
-            "filename_hires": getFilename(optionData.filename_hires, optionData.webroot_hires),
-            "extension": optionData.image_type
-        };
 
 
         this.numTimePoints = Math.floor(moment.duration(optionData.end.diff(optionData.start)).asSeconds() / optionData.period);
@@ -2323,7 +2335,7 @@ export class ES6Player {
         elem.click();
         document.body.removeChild(elem);
 
-    };
+    }
     xmlToJson(xml){
         // Changes XML to JSON
         // https://davidwalsh.name/convert-xml-json
@@ -2351,7 +2363,7 @@ export class ES6Player {
                 let item = xml.childNodes.item(i);
                 let nodeName = item.nodeName;
                 if (typeof(obj[nodeName]) == "undefined") {
-                    obj[nodeName] = xmlToJson(item);
+                    obj[nodeName] = this.xmlToJson(item);
                 } else {
                     if (typeof(obj[nodeName].push) == "undefined") {
                         let old = obj[nodeName];
