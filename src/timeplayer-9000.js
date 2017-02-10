@@ -2290,6 +2290,8 @@ export class ES6Player {
             "period": this.period,
             "webroot": this.webroot,
             "webroot_hires": this.webroot_hires,
+            "root": this.webroot,
+            "root_hires": this.webroot_hires,
             "ts_start": this.start.format(this.timestreamParse),
             "ts_end": this.end.format(this.timestreamParse),
             "width_hires": this.width_hires,
@@ -2298,6 +2300,7 @@ export class ES6Player {
             "timestreamFormat": this.timestreamFormat,
             "timestreamParse": this.timestreamParse,
             "default_image": this.default_image,
+            "thumbnail": this.default_image,
             "ts_version": "2.0"
         };
         this.debug("Exporting object: ", jsonObject);
