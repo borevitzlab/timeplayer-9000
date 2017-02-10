@@ -387,8 +387,8 @@ export class ES6Player {
                 this.redrawPaths();
                 this.updateAxisScales();
                 this.updateGradients();
-                this.updatePlayer(this.currentFrameIndex + 1);
-                this.updatePlayer(this.currentFrameIndex - 1);
+
+                this.updatePlayer(this.currentFrameIndex, true);
                 jQuery("#" + this.hiresButton.id).attr("title", this.hires?"High Resolution":"Low Resolution");
             }
         };
@@ -1803,7 +1803,7 @@ export class ES6Player {
         });
     }
 
-    updatePlayer(input){
+    updatePlayer(input, immediate=false){
         /**
          * updates the state of the player.
          * changes frame to desired and snaps the frame to the correct time resolution, to avoid loading too may images.
@@ -1822,7 +1822,7 @@ export class ES6Player {
             the_time = originalinput;
 
         index = this.timeToIndex(the_time);
-        if (index != this.currentFrameIndex) {
+        if (index != this.currentFrameIndex || immediate) {
             select("#timeplayer-datetime-info").text(moment(the_time).format(this.humanFormat));
             this.frameChange(index);
             this.currentFrameIndex = index;
