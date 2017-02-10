@@ -443,13 +443,13 @@ export class ES6Player {
             subButtons: {
                 copyLink: {
                     id: "copylink-button",
-                    title: "Copy link to clipboard",
-                    octicon: octicons.clippy,
+                    title: "Copy bookmark link to clipboard",
+                    octicon: octicons.bookmark,
                     clickedCallback: () => copyToClipboard(this.getURLParamsForCopy())
                 },
                 embedLink: {
                     id: "embedlink-button",
-                    title: "Copy embed code to clipboard",
+                    title: "Copy embed bookmark code to clipboard",
                     octicon: octicons.pin,
                     clickedCallback: () => copyToClipboard(this.getEmbedTag())
                 },
@@ -2275,7 +2275,7 @@ export class ES6Player {
 
         // this.bottomBrush.move(this.bottomBrushGroup, [x0, x1]);
         this.bottomBrushGroup.call(this.bottomBrush.move, snapToExtent.map(this.botXscale));
-
+        this.updateAxisScales();
         // this.bottomBrushGroup.transition().call(this.bottomBrush.move, snapToExtent.map(this.botXscale));
 
         if (isDefined(params.i)) {
@@ -2283,15 +2283,20 @@ export class ES6Player {
             this.viewer.addHandler('open', (event) => this.addSuccessForUrl(event.source.url));
             let m = moment(params.i, this.timestreamParse);
             let index = this.timeToIndex(m.toDate());
-            this.currentFrameIndex = index;
-            this.updatePlayer(this.currentFrameIndex, true);
-            this.updateInfoBox();
+            this.log("opening", index);
+            timeout(()=>{
+                this.updatePlayer(index, true);
+                this.updateInfoBox();
+            }, 250);
+
         } else {
             this.viewer.addOnceHandler('open', () => {
                 // this just ignores the first event and binds to any consecutive events.
                 this.viewer.addHandler('open', (event) => this.addSuccessForUrl(event.source.url));
             });
-            this.loadDefaultImage();
+            timeout(()=>{
+                this.loadDefaultImage();
+            }, 250);
         }
     }
 
