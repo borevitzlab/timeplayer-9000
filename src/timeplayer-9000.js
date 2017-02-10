@@ -513,7 +513,6 @@ export class ES6Player {
             }
             else{
                 this.error("malformed url (supporting .json and .jsonp)");
-                return;
             }
         } else if (isDefined(options.jsonString)) {
             this.estimateTimelineData(JSON.parse(options.jsonString));
