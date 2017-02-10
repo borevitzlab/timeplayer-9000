@@ -196,13 +196,13 @@ const everyInterval = (interval, amount) => {
 };
 
 const formatMillisecond = timeFormat(".%L"),
-    formatSecond = timeFormat(":%S"),
-    formatMinute = timeFormat("%I:%M"),
-    formatHour = timeFormat("%I %p"),
-    formatDay = timeFormat("%a %d"),
-    formatWeek = timeFormat("%b %d"),
-    formatMonth = timeFormat("%B"),
-    formatYear = timeFormat("%b '%y");
+    formatSecond = timeFormat("%H:%M:%S"),
+    formatMinute = timeFormat("%H:%M"),
+    formatHour = timeFormat("%H:%M"),
+    formatDay = timeFormat("%e %b"),
+    formatWeek = timeFormat("%e %b"),
+    formatMonth = timeFormat("%b '%y"),
+    formatYear = timeFormat("%b %Y");
 
 const seconds = (n) => n * 1000,
     minutes = (n) => seconds(60) * n,
@@ -221,13 +221,13 @@ const seconds = (n) => n * 1000,
 
 const customTimeFormat = (date) => {
     return (
-        +window.time.timeSecond(date) < +date ? formatMillisecond
-        : +window.time.timeMinute(date) < +date ? formatSecond
-        : +window.time.timeHour(date) < +date ? formatMinute
-        : +window.time.timeDay(date) < +date ? formatHour
-        : +window.time.timeWeek(date) < +date ? formatDay
-        : +window.time.timeMonth(date) < +date ? formatWeek
-        : +window.time.timeYear(date) < +date ? formatMonth
+        time.timeSecond(date) < date ? formatMillisecond
+        : time.timeMinute(date) < date ? formatSecond
+        : time.timeHour(date) < date ? formatMinute
+        : time.timeDay(date) < date ? formatHour
+        // : time.timeWeek(date) < date ? formatDay
+        : time.timeMonth(date) < date ? (time.timeWeek(date) < date ? formatDay : formatWeek)
+        : time.timeYear(date) < date ? formatMonth
         : formatYear)
     (date);
 };
@@ -251,7 +251,6 @@ const intervalSetArray = [
 export class ES6Player {
     constructor(options) {
         this.createLog();
-        this.historyState = {ES6Player: "EmptyValue"};
         // our member vars
         this.gradientData = [];
         this.errorData = {};
@@ -1572,16 +1571,19 @@ export class ES6Player {
             })
             .call(this.bottomBrush);
 
+
         this.bottomBrushGroup.selectAll(".resize").append("rect")
             .classed("rect-resize-handle", true)
             .styles({
                 "fill": "dodgerblue",
-                "fill-opacity": .4
+                "fill-opacity": .5
             })
             .attrs({
                 "transform": (d, i) => "translate(" + (i ? 0 : -25) + ",0)",
                 "width": 25
             });
+
+        this.bottomBrushGroup.selectAll("rect.selection").style("fill", "white");
 
         this.bottomBrushGroup.selectAll("rect")
             .attrs({
@@ -1891,7 +1893,8 @@ export class ES6Player {
 
 
         this.bottomBrush.move(this.bottomBrushGroup, [x0, x1]);
-        this.bottomBrushGroup.transition().duration(500)
+        this.bottomBrushGroup.transition().duration(2000)
+            .on("end", ()=>this.updateAxisScales())
             .call(this.bottomBrush.move, [minRounded, maxRounded].map(this.botXscale))
             .call(this.updateAxisScales);
 
@@ -1994,16 +1997,11 @@ export class ES6Player {
         this.topAxisEle
             .call(this.topXscale.domain([minExtent, maxExtent]))
             .call(this.xAxisTop);
-        // .selectAll(".topaxis text")
-        // .attr("y", 0).attr("x", 0)
-        // .attr("dy", "-1.1em")
-        // .attr("transform", "rotate(45)");
 
         this.svg.selectAll(".topaxis text")
-            .transition(2000)
+            .attr("transform", "rotate(45)")
             .attr("y", 0).attr("x", 5)
             .attr("dy", "-1.1em")
-            .attr("transform", "rotate(45)")
             .style("text-anchor", "end");
 
         this.topAxisSliderHandle.attr("visibility", "visible");
