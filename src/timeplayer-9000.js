@@ -124,44 +124,44 @@ Number.prototype.map = function (in_min, in_max, out_min, out_max) {
 };
 
 const copyToClipboard = (text, elementid) => {
-        let textArea = document.createElement("textarea");
-        textArea.style.position = 'fixed';
-        textArea.style.top = 0;
-        textArea.style.left = 0;
-        textArea.style.width = '2em';
-        textArea.style.height = '2em';
-        textArea.style.padding = 0;
-        textArea.style.border = 'none';
-        textArea.style.outline = 'none';
-        textArea.style.boxShadow = 'none';
-        textArea.style.background = 'transparent';
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        try {
-            let successful = document.execCommand('copy');
-            let msg = successful ? 'successful' : 'unsuccessful';
-            this.log('Copying text command was ' + msg);
-            select("#" + elementid)
-                .classes({
-                    "btn-danger": !successful,
-                    "btn-primary": false,
-                    "btn-success": successful
-                });
-        } catch (err) {
-            // console.error(err);
-            select("#" + elementid).classed("btn-danger", true);
-        }
-        document.body.removeChild(textArea);
-        timeout(() => {
-            select("#" + elementid)
-                .classes({
-                    "btn-danger": false,
-                    "btn-primary": false,
-                    "btn-success": true
-                });
-        }, 2000);
-    };
+    let textArea = document.createElement("textarea");
+    textArea.style.position = 'fixed';
+    textArea.style.top = 0;
+    textArea.style.left = 0;
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = 0;
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        let successful = document.execCommand('copy');
+        let msg = successful ? 'successful' : 'unsuccessful';
+        this.log('Copying text command was ' + msg);
+        select("#" + elementid)
+            .classes({
+                "btn-danger": !successful,
+                "btn-primary": false,
+                "btn-success": successful
+            });
+    } catch (err) {
+        // console.error(err);
+        select("#" + elementid).classed("btn-danger", true);
+    }
+    document.body.removeChild(textArea);
+    timeout(() => {
+        select("#" + elementid)
+            .classes({
+                "btn-danger": false,
+                "btn-primary": false,
+                "btn-success": true
+            });
+    }, 2000);
+};
 
 const isNumeric = (n) => !isNaN(parseFloat(n)) && isFinite(n);
 
@@ -195,15 +195,6 @@ const everyInterval = (interval, amount) => {
     return interval.every(amount).range;
 };
 
-const formatMillisecond = timeFormat(".%L"),
-    formatSecond = timeFormat("%H:%M:%S"),
-    formatMinute = timeFormat("%H:%M"),
-    formatHour = timeFormat("%H:%M"),
-    formatDay = timeFormat("%e %b"),
-    formatWeek = timeFormat("%e %b"),
-    formatMonth = timeFormat("%b '%y"),
-    formatYear = timeFormat("%b %Y");
-
 const seconds = (n) => n * 1000,
     minutes = (n) => seconds(60) * n,
     hours = (n) => minutes(60) * n,
@@ -219,37 +210,54 @@ const seconds = (n) => n * 1000,
     everyMonths = (n) => everyInterval(time.timeMonth, n),
     everyYears = (n) => everyInterval(time.timeYear, n);
 
+
+const formatMillisecond = timeFormat(".%L"),
+    formatSecond = timeFormat("%H:%M:%S"),
+    formatMinute = timeFormat("%H:%M"),
+    formatHour = timeFormat("%H:%M"),
+    formatDay = timeFormat("%e %b"),
+    formatWeek = timeFormat("%e %b"),
+    formatMonth = timeFormat("%b '%y"),
+    formatYear = timeFormat("%b %Y");
+
 const customTimeFormat = (date) => {
+    /**
+     * custom time format function for timeplayer ticks.
+     */
     return (
         time.timeSecond(date) < date ? formatMillisecond
         : time.timeMinute(date) < date ? formatSecond
         : time.timeHour(date) < date ? formatMinute
         : time.timeDay(date) < date ? formatHour
-        // : time.timeWeek(date) < date ? formatDay
         : time.timeMonth(date) < date ? (time.timeWeek(date) < date ? formatDay : formatWeek)
         : time.timeYear(date) < date ? formatMonth
         : formatYear)
     (date);
 };
 
+// set of intervals for the timeplayer to resample to.
 const intervalSetArray = [
-        [(d) => true, everySeconds(1)],
-        [(d) => +d > minutes(1), everyMinutes(1)],
-        [(d) => +d > minutes(5), everyMinutes(5)],
-        [(d) => +d > minutes(15), everyMinutes(15)],
-        [(d) => +d > minutes(30), everyMinutes(30)],
-        [(d) => +d > hours(1), everyHours(1)],
-        [(d) => +d > hours(3), everyHours(3)],
-        [(d) => +d > hours(6), everyHours(6)],
-        [(d) => +d > hours(12), everyHours(12)],
-        [(d) => +d > days(1), everyDays(1)],
-        [(d) => +d > days(2), everyDays(2)],
-        [(d) => +d > days(7), everyDays(7)],
-        [(d) => +d > weeks(2), everyWeeks(2)]
-    ];
+    [(d) => true, everySeconds(1)],
+    [(d) => +d > minutes(1), everyMinutes(1)],
+    [(d) => +d > minutes(5), everyMinutes(5)],
+    [(d) => +d > minutes(15), everyMinutes(15)],
+    [(d) => +d > minutes(30), everyMinutes(30)],
+    [(d) => +d > hours(1), everyHours(1)],
+    [(d) => +d > hours(3), everyHours(3)],
+    [(d) => +d > hours(6), everyHours(6)],
+    [(d) => +d > hours(12), everyHours(12)],
+    [(d) => +d > days(1), everyDays(1)],
+    [(d) => +d > days(2), everyDays(2)],
+    [(d) => +d > days(7), everyDays(7)],
+    [(d) => +d > weeks(2), everyWeeks(2)]
+];
 
 export class ES6Player {
     constructor(options) {
+        /**
+         * Constructor.
+         * should only ever be called once.
+         */
         this.createLog();
         // our member vars
         this.gradientData = [];
@@ -265,7 +273,7 @@ export class ES6Player {
         this.snapping = "None";
         this.playing = false;
         this.period = 300;
-        this.preloadAmount = 100;
+        this.preloadAmount = 200;
         this.currentFrameIndex = 5;
         this.height = 240;
         this.width = 640;
@@ -282,6 +290,8 @@ export class ES6Player {
         this.overlays = [];
         this.originalExtent = [];
 
+
+        // dimensions object. change this if you want to change the dimensions of the timebar.
         this.dimensions = {
             timelineWidth: window.innerWidth,
             timelineHeight: 110,
@@ -313,7 +323,7 @@ export class ES6Player {
             .x((d) => this.botXscale(d.datetime))
             .y((d) => this.dimensions.bottomHeight / 2);
 
-
+        // creates the button datas.
         this.playControlsButtonsData = {
             playButton: {
                 id: "play-button",
@@ -323,6 +333,7 @@ export class ES6Player {
                 clickedCallback: (d) => {
                     this.log("Speed - ", this.speedMultiplier);
                     this.playing = !this.playing;
+                    select("#" + this.playControlsButtonsData.omniPreloadButton.id).setIcon(false);
                     this.updatePlayState();
                 }
             },
@@ -333,6 +344,7 @@ export class ES6Player {
                 octiconWait: octicons.watch,
                 clickedCallback: (d) => {
                     this.playing = false;
+                    select("#" + this.playControlsButtonsData.playButton.id).setIcon(false);
                     this.preloadOmni();
                 }
             },
@@ -389,7 +401,7 @@ export class ES6Player {
                 this.updateGradients();
 
                 this.updatePlayer(this.currentFrameIndex, true);
-                jQuery("#" + this.hiresButton.id).attr("title", this.hires?"High Resolution":"Low Resolution");
+                jQuery("#" + this.hiresButton.id).attr("title", this.hires ? "High Resolution" : "Low Resolution");
             }
         };
         this.snapButtonData = {
@@ -455,7 +467,6 @@ export class ES6Player {
                 }
             }
         };
-
         this.speedSliderData = {
             id: "timeplayer-speed-slider",
             title: "Realtime speed multiplier",
@@ -475,42 +486,40 @@ export class ES6Player {
             ]
         };
 
+        // if options isnt defined error our
         if (!isDefined(options)) {
             this.error("No options provided....");
             return;
         }
+        // if no url or data source is defined error out.
         if (!isDefined(options.url) && !isDefined(options.jsonString) && !isDefined(options.data)) {
             this.error("No data source in options...");
             return;
         }
 
-
-        // parse options into this object.
+        // parse options into 'this'
         this.parseOptsIntoMe(options);
         this.createViewer();
         if (isDefined(options.url)) {
             let callback = (err, data) => this.estimateTimelineData(data);
-
-            if (options.url.split("?")[0].endsWith("json")) {
+            if (options.url.split("?")[0].endsWith("json"))
                 json(options.url, callback);
-            } else if (options.url.includes("xml")) {
-                xml(options.url, (err, data) => {
-                    let timestreamConf = this.timecamFormatToTimestreamFormat(this.xmlToJson(data));
-                    this.estimateTimelineData(timestreamConf);
-                });
-            } else {
-                this.error("malformed url (supporting .json and .jsonp)");
-                return;
-            }
+            else if (options.url.includes("xml"))
+                xml(options.url, (err, data) => callback(null, this.timecamFormatToTimestreamFormat(this.xmlToJson(data))));
+            else
+                this.error("malformed url (supporting .json and .jsonp)"); return;
+
         }
-        if (isDefined(options.jsonString)) {
+        else if (isDefined(options.jsonString)) {
             this.estimateTimelineData(JSON.parse(options.jsonString));
         }
+
 
         this.addListeners();
     }
 
-    addListeners(){
+
+    addListeners() {
         // add handler for resize
         select(window).on("resize", () => this.rescaleTimeline());
         // add fullscreen resize handler.
@@ -557,7 +566,7 @@ export class ES6Player {
         });
     }
 
-    estimateTimelineData(optionData){
+    estimateTimelineData(optionData) {
         /**
          * Estimates (pretty well), configuration data for a timelapse.
          * the parameter optionData must follow this spec:
@@ -617,7 +626,7 @@ export class ES6Player {
 
         // assign webroot to webroot_hires if webroot isnt defined.
         optionData.webroot = isDefined(optionData.webroot) ? fixSlashes(optionData.webroot) : fixSlashes(optionData.webroot_hires);
-        optionData.filename = isDefined(optionData.filename)?optionData.filename: optionData.filename_hires;
+        optionData.filename = isDefined(optionData.filename) ? optionData.filename : optionData.filename_hires;
 
 
         if (!isDefined(optionData.filename) && !isDefined(optionData.filename_hires)) {
@@ -635,7 +644,7 @@ export class ES6Player {
             "extension": optionData.image_type
         };
 
-        if(isDefined(optionData.webroot_hires)&&isDefined(optionData.filename_hires)){
+        if (isDefined(optionData.webroot_hires) && isDefined(optionData.filename_hires)) {
             this.mapObj.filename_hires = getFilename(optionData.filename_hires, optionData.webroot_hires);
             this.mapObj.webroot_hires = optionData.webroot_hires;
         }
@@ -738,9 +747,10 @@ export class ES6Player {
         this.constructTimeline();
         return optionData
     }
-    createViewer(){
+
+    createViewer() {
         // create container
-        jQuery("<div id='"+this.viewerId+"'></div>")
+        jQuery("<div id='" + this.viewerId + "'></div>")
             .css("height", "" + this.getRemainingHeight() - 10 + "px")
             .css("width", "100%")
             .appendTo(this.selector);
@@ -936,7 +946,8 @@ export class ES6Player {
             this.addErrorForUrl(event.source.url);
         });
     }
-    initUI(selector){
+
+    initUI(selector) {
         /**
          * initialises the user interface with the given selector.
          * @param {string} selector - The target selector for the ui to fill. (ie "#timeplayer-control-container"
@@ -971,7 +982,10 @@ export class ES6Player {
 
         selection.prototype.appendOcticon = function () {
             return this.each(function (d) {
-                d.octicon.appendToSelection(select(this), {width: self.dimensions.iconSize, height: self.dimensions.iconSize});
+                d.octicon.appendToSelection(select(this), {
+                    width: self.dimensions.iconSize,
+                    height: self.dimensions.iconSize
+                });
             });
         };
 
@@ -1014,7 +1028,7 @@ export class ES6Player {
             .append("div")
             .classed("col-md-12", true);
 
-        if ((this.getRemainingHeight()-10) > 480) {
+        if ((this.getRemainingHeight() - 10) > 480) {
             this.controlsRootEle.on("mouseenter", (d) => {
                 this.controlsRootEle.transition()
                     .duration(500)
@@ -1062,7 +1076,7 @@ export class ES6Player {
             })
             .append("button")
             .makeButton().makeTooltip()
-            .on("click", (d)=>d.clickedCallback(d))
+            .on("click", (d) => d.clickedCallback(d))
             .style("height", "32px")
             .property("type", "button").text("None");
 
@@ -1205,7 +1219,8 @@ export class ES6Player {
             });
         this.viewer.addControl("timeplayer-controls", {anchor: OpenSeadragon.ControlAnchor.NONE});
     }
-    constructTimeline(){
+
+    constructTimeline() {
 
         this.initUI(this.selector);
         this.dimensions.timelineWidth = this.timeplayerTimelineEle.node().getBoundingClientRect().width;
@@ -1279,7 +1294,8 @@ export class ES6Player {
             .tickFormat(customTimeFormat);
         this.createElements(dataExtent);
     }
-    createElements(dataExtent){
+
+    createElements(dataExtent) {
         select("#timeplayer-timeline").selectAll("*").remove();
         this.svg = select("#timeplayer-timeline")
             .append("svg")
@@ -1530,7 +1546,7 @@ export class ES6Player {
                 }
             })
             .handleSize(25)
-            .on("brush", ()=>{
+            .on("brush", () => {
                 /**
                  * function called when the bottom half of the timeline is brushed.
                  */
@@ -1541,7 +1557,7 @@ export class ES6Player {
                     this.updateAxisScales();
                 }
             })
-            .on("end",()=>{
+            .on("end", () => {
                 /**
                  * function called after the bottom half of the time line has been brushed.
                  * performs the snapping operations.
@@ -1598,7 +1614,8 @@ export class ES6Player {
         this.updateAxisScales();
         this.loadURLParams();
     };
-    addErrorAtIndex(index){
+
+    addErrorAtIndex(index) {
         /**
          * adds an error to the error data at the specified index
          * @param {number} index - index to add an error at
@@ -1607,7 +1624,8 @@ export class ES6Player {
         this.updateGradients();
         this.updateSliderColors(this.currentFrameIndex)
     }
-    addSuccessAtIndex(index){
+
+    addSuccessAtIndex(index) {
         /**
          * adds a successful image load to the error data at the specified index
          * @param {number} index - index to add a success at
@@ -1617,7 +1635,8 @@ export class ES6Player {
         this.updateSliderColors(this.currentFrameIndex)
 
     }
-    clearAtIndex(index){
+
+    clearAtIndex(index) {
         /**
          * Removes all error data at a specific index.
          * this includes any information about whether the image has been loaded.
@@ -1628,7 +1647,8 @@ export class ES6Player {
         this.updateGradients();
         this.updateSliderColors(this.currentFrameIndex)
     }
-    addErrorForUrl(url){
+
+    addErrorForUrl(url) {
         /**
          * the same as "addErrorAtIndex" however accepts a url that is a tilesource for the this.viewer.
          * This is a helper function to map back from image load failed events to meaningful time data to mark the
@@ -1638,7 +1658,8 @@ export class ES6Player {
         let m = moment(url, this.replaceUrl(this.timestreamFormat));
         this.addErrorAtIndex(this.timeToIndex(m.toDate()));
     }
-    addSuccessForUrl(url){
+
+    addSuccessForUrl(url) {
         /**
          * the same as "addErrorForUrl" except that it adds a successful load instead of an error
          * @param {string} - url to add a success at
@@ -1647,12 +1668,19 @@ export class ES6Player {
         this.addSuccessAtIndex(this.timeToIndex(m.toDate()));
     }
 
-    preloadOmni(){
+    updateInfoBox(){
+        let status = moment(this.timeToIndex.invert(this.currentFrameIndex)).format(this.humanFormat) +" "+this.viewer.imageLoader.jobsInProgress+(this.hires?"@hires" :"@lores");
+        select("#timeplayer-datetime-info").text(status);
+    }
+
+    preloadOmni() {
         /**
          * Triggers preload of the images at the current time resolution ordered from the time cursor out.
          * Uses timer() to await the jobs so as to not block the browser.
          */
         this.debug("Preload start...");
+
+        this.viewer.imageLoader.clear();
         let [x0, x1] = brushSelection(this.bottomBrushGroup.node()),
             [minExtent, maxExtent] = [x0, x1].map(this.botXscale.invert);
 
@@ -1686,9 +1714,8 @@ export class ES6Player {
             });
         });
         let t = timer(() => {
-            select("#loadingStop").attr("offset", () => {
-                return Math.floor((this.viewer.imageLoader.jobsInProgress / this.preloadAmount) * 100) + "%";
-            });
+            select("#loadingStop").attr("offset", () => Math.floor((this.viewer.imageLoader.jobsInProgress / this.preloadAmount) * 100) + "%");
+            this.updateInfoBox();
             if (this.viewer.imageLoader.jobsInProgress === 0) {
                 this.loaded = true;
                 select("#" + this.playControlsButtonsData.omniPreloadButton.id).setIcon(false);
@@ -1696,7 +1723,8 @@ export class ES6Player {
             if (this.loaded) t.stop();
         });
     }
-    preloadOne(index){
+
+    preloadOne(index) {
         /**
          * preloads a single image at the index specified
          * @param {number} index - index to load.
@@ -1713,7 +1741,8 @@ export class ES6Player {
             }
         });
     }
-    preloadForward(){
+
+    preloadForward() {
         /**
          * preloads all the images currently in the selected range from the beginning, as opposed to loading from the
          * current location of the time cursor
@@ -1743,16 +1772,16 @@ export class ES6Player {
         });
 
         let t = timer(() => {
-            select("#loadingStop").attr("offset", () => {
-                return Math.floor((this.viewer.imageLoader.jobsInProgress / this.preloadAmount) * 100) + "%";
-            });
+            select("#loadingStop").attr("offset", () => Math.floor((this.viewer.imageLoader.jobsInProgress / this.preloadAmount) * 100) + "%");
+            this.updateInfoBox();
             if (this.viewer.imageLoader.jobsInProgress === 0) {
                 this.loaded = true;
             }
             if (this.loaded) t.stop();
         });
     }
-    frameChange(index){
+
+    frameChange(index) {
         /**
          * makes the this.viewer change frame.
          * wont attempt to change to a frame that is known to be non-existent
@@ -1761,7 +1790,8 @@ export class ES6Player {
         if (!isDefined(this.errorData[index]) || !this.errorData[index].error)
             this.viewer.goToPage(index);
     }
-    beginPlay(index){
+
+    beginPlay(index) {
         /**
          * begins playing from the index provided.
          * @param {number} index - index of the frame to start from.
@@ -1798,12 +1828,11 @@ export class ES6Player {
             this.updatePlayer(func(d));
             lastTime = d;
             last = elapsed;
-            console.log(this.playing);
             if (!this.playing) t.stop();
         });
     }
 
-    updatePlayer(input, immediate=false){
+    updatePlayer(input, immediate = false) {
         /**
          * updates the state of the player.
          * changes frame to desired and snaps the frame to the correct time resolution, to avoid loading too may images.
@@ -1823,7 +1852,6 @@ export class ES6Player {
 
         index = this.timeToIndex(the_time);
         if (index != this.currentFrameIndex || immediate) {
-            select("#timeplayer-datetime-info").text(moment(the_time).format(this.humanFormat));
             this.frameChange(index);
             this.currentFrameIndex = index;
         }
@@ -1832,13 +1860,17 @@ export class ES6Player {
         // smooth slider
         this.updateSliderX(this.topXscale(this.timeToIndex.invert(input)), index);
         this.updateSliderColors(index);
+        this.updateInfoBox();
     }
-    updatePlayState(){
+
+    updatePlayState() {
         /**
          * updates the play state
          * whenever the a play state event is triggered, this should be called to inform the player of what state
          * it is meant to be in (idle, loading, playing etc).
          */
+        this.viewer.imageLoader.clear();
+
         select("#" + this.playControlsButtonsData.playButton.id)
             .setIcon(this.playing);
 
@@ -1857,7 +1889,8 @@ export class ES6Player {
             this.loaded = !this.loaded;
         }
     }
-    togglePlay(){
+
+    togglePlay() {
         /**
          * toggles play mode, provided as an example..
          * @type {boolean}
@@ -1866,7 +1899,7 @@ export class ES6Player {
         this.updatePlayState();
     }
 
-    snapTo(targetSnapping){
+    snapTo(targetSnapping) {
         /**
          * snaps to the snapping interval defined by this.snapping
          */
@@ -1879,7 +1912,7 @@ export class ES6Player {
 
 
         let brushArea = brushSelection(this.bottomBrushGroup.node());
-        if (brushArea === null && event.sourceEvent) brushArea = [event.sourceEvent.layerX, event.sourceEvent.layerX+1];
+        if (brushArea === null && event.sourceEvent) brushArea = [event.sourceEvent.layerX, event.sourceEvent.layerX + 1];
         let [x0, x1] = brushArea,
             [minExtent, maxExtent] = [x0, x1].map(this.botXscale.invert),
             [minRounded, maxRounded] = [minExtent, maxExtent].map(func.round);
@@ -1894,12 +1927,13 @@ export class ES6Player {
 
         this.bottomBrush.move(this.bottomBrushGroup, [x0, x1]);
         this.bottomBrushGroup.transition().duration(2000)
-            .on("end", ()=>this.updateAxisScales())
+            .on("end", () => this.updateAxisScales())
             .call(this.bottomBrush.move, [minRounded, maxRounded].map(this.botXscale))
             .call(this.updateAxisScales);
 
     }
-    bottomBrushed(){
+
+    bottomBrushed() {
         /**
          * function called when the bottom half of the timeline is brushed.
          */
@@ -1910,7 +1944,8 @@ export class ES6Player {
             this.updateAxisScales();
         }
     }
-    bottomBrushEnded(){
+
+    bottomBrushEnded() {
         /**
          * function called after the bottom half of the time line has been brushed.
          * performs the snapping operations.
@@ -1926,7 +1961,8 @@ export class ES6Player {
             }
         }
     }
-    updateSliderColors(index){
+
+    updateSliderColors(index) {
         /**
          * Updates the colours used in the top slider handle.
          * @param {number} index - what index the slider is at.
@@ -1936,7 +1972,8 @@ export class ES6Player {
             .attr("fill", (d) => hsl(this.colorSelect(this.name)))
             .attr("fill-opacity", (d) => !isDefined(dat) ? 0.365 : (dat.error ? 0 : 0.8));
     }
-    updateSliderX(topXvalue, index){
+
+    updateSliderX(topXvalue, index) {
         /**
          * updates the position of the slider handle and calls the function to update the colour of the handle
          * topXvalue is the actual pixel location of the slider, while index is optional
@@ -1954,7 +1991,8 @@ export class ES6Player {
             .attr("x1", topXvalue).attr("x2", topXvalue);
 
     }
-    reloadTimeresTicks(){
+
+    reloadTimeresTicks() {
         /**
          * To avoid loading too much data at once, the timeline must be resampled along time and bucketed reasonably.
          * this function ensures that there is a rounding time scale that performs this function.
@@ -1982,13 +2020,14 @@ export class ES6Player {
             });
         }
     }
-    updateAxisScales(){
+
+    updateAxisScales() {
         /**
          * updates the scales of both top and bottom time axes.
          * This is done so that whent the bottom time axis is brushed, the top time axis is transformed to match the
          * extents that were brushed.
          */
-        if(this === null) return;
+        if (this === null) return;
         let brushArea = brushSelection(this.bottomBrushGroup.node());
         if (brushArea === null) return;
         let [x0, x1] = brushArea,
@@ -2026,7 +2065,8 @@ export class ES6Player {
         });
         this.updateGradients();
     }
-    updateGradients(){
+
+    updateGradients() {
         /**
          * updates the gradients (lines) on the timeline to represent the current load state of images.
          */
@@ -2049,8 +2089,9 @@ export class ES6Player {
             });
 
     }
-    rescaleTimeline(){
-        select("#openseadragon-this.viewer").transition().style("height", String(this.getRemainingHeight()-10) + "px");
+
+    rescaleTimeline() {
+        select("#openseadragon-this.viewer").transition().style("height", String(this.getRemainingHeight() - 10) + "px");
 
         // dimensions.timelineWidth = jQuery("#timeplayer-timeline").width() || jQuery(window).width();
 
@@ -2095,7 +2136,7 @@ export class ES6Player {
 
 
         this.topAxisDragger.transition()
-            .attr("height",  this.dimensions.axisHeight + this.dimensions.topHeight)
+            .attr("height", this.dimensions.axisHeight + this.dimensions.topHeight)
             .attr("width", this.dimensions.timelineWidth)
 
         selectAll(".background")
@@ -2136,10 +2177,10 @@ export class ES6Player {
         this.topLineGradientStops.sort((a, b) => ascending(a.index, b.index));
         this.botLineGradientStops.sort((a, b) => ascending(a.index, b.index));
 
-        if(this.bottomBrushGroup !== null){
+        if (this.bottomBrushGroup !== null) {
             let [x0, x1] = brushSelection(this.bottomBrushGroup.node());
 
-            [x0, x1] = [Math.max(0,x0), Math.min(x1, this.dimensions.timelineWidth)];
+            [x0, x1] = [Math.max(0, x0), Math.min(x1, this.dimensions.timelineWidth)];
 
             // this.bottomBrush.move(this.bottomBrushGroup, [x0, x1]);
             this.bottomBrushGroup.transition().duration(1000)
@@ -2150,7 +2191,8 @@ export class ES6Player {
         this.updateAxisScales();
         this.updateGradients();
     }
-    redrawPaths(){
+
+    redrawPaths() {
         this.topLineGradient
             .attrs({"x2": this.dimensions.timelineWidth, "y2": 0});
         this.botLineGradient
@@ -2161,7 +2203,7 @@ export class ES6Player {
     }
 
 
-    loadDefaultImage(){
+    loadDefaultImage() {
         let idx = Math.floor(this.timeToIndex(this.end) / 2);
         this.updatePlayer(idx);
         if (this.default_image) {
@@ -2175,12 +2217,13 @@ export class ES6Player {
             this.log("default_image requested and not included in this object.");
         }
     }
-    getURLParams(){
+
+    getURLParams() {
         let pos = location.href.indexOf("?");
         if (pos == -1) return [];
         let query = location.href.substr(pos + 1);
         let result = {};
-        query.split("&").forEach((part)=>{
+        query.split("&").forEach((part) => {
             if (!part) return;
             part = part.split("+").join(" "); // replace every + with space, regexp-free version
             let eq = part.indexOf("=");
@@ -2199,7 +2242,8 @@ export class ES6Player {
         });
         return result;
     }
-    loadParamsFromObject(params){
+
+    loadParamsFromObject(params) {
         this.debug("Loading params", params);
         if (isDefined(params.x) &&
             isDefined(params.y) &&
@@ -2229,7 +2273,7 @@ export class ES6Player {
             snapToExtent = [this.start.toDate(), this.end.toDate()];
         }
 
-            // this.bottomBrush.move(this.bottomBrushGroup, [x0, x1]);
+        // this.bottomBrush.move(this.bottomBrushGroup, [x0, x1]);
         this.bottomBrushGroup.call(this.bottomBrush.move, snapToExtent.map(this.botXscale));
 
         // this.bottomBrushGroup.transition().call(this.bottomBrush.move, snapToExtent.map(this.botXscale));
@@ -2240,9 +2284,8 @@ export class ES6Player {
             let m = moment(params.i, this.timestreamParse);
             let index = this.timeToIndex(m.toDate());
             this.currentFrameIndex = index;
-            select("#timeplayer-datetime-info").text(moment(this.timeToIndex.invert(index)).format(this.humanFormat));
             this.updatePlayer(this.currentFrameIndex, true);
-
+            this.updateInfoBox();
         } else {
             this.viewer.addOnceHandler('open', () => {
                 // this just ignores the first event and binds to any consecutive events.
@@ -2251,10 +2294,12 @@ export class ES6Player {
             this.loadDefaultImage();
         }
     }
-    loadURLParams(){
+
+    loadURLParams() {
         this.loadParamsFromObject(this.getURLParams());
     }
-    getNewParams(){
+
+    getNewParams() {
         let point = this.viewer.viewport.viewportToImageCoordinates(this.viewer.viewport.getBounds().getCenter());
         // let point = this.viewer.viewport.getBounds().getCenter();
         let [x0, x1] = brushSelection(this.bottomBrushGroup.node()),
@@ -2274,15 +2319,18 @@ export class ES6Player {
                 return [prop, params[prop]].map(encodeURIComponent).join("=");
             }).join("&");
     }
-    getURLParamsForCopy(){
+
+    getURLParamsForCopy() {
         // window.location = window.location.pathname + this.getNewParams();
         // window.history.replaceState(null, null, window.location.pathname + this.getNewParams());
         return window.location.host + window.location.pathname + this.getNewParams();
     }
-    getEmbedTag(){
+
+    getEmbedTag() {
         return '<embed width="' + Math.floor(this.dimensions.timelineWidth) + '" height="' + Math.floor(this.getRemainingHeight()) + '" src="https://traitcapture.org' + window.location.pathname.replace("timestreams", "timestreams-embed") + this.getNewParams() + '">';
     };
-    getDownloadJson(){
+
+    getDownloadJson() {
         let filename = this.name + ".json";
         let thumbnail = this.default_image.startsWith("/") ? window.location.protocol + "//" + window.location.host + this.default_image : this.default_image;
         let jsonObject = {
@@ -2317,7 +2365,8 @@ export class ES6Player {
             document.body.removeChild(elem);
         }
     }
-    getDownloadImg(){
+
+    getDownloadImg() {
         let url = this.viewer.world.getItemAt(this.viewer.world.getItemCount() - 1).source.url;
         let filename = url.split("/");
         filename = filename[filename.length];
@@ -2329,7 +2378,8 @@ export class ES6Player {
         document.body.removeChild(elem);
 
     }
-    xmlToJson(xml){
+
+    xmlToJson(xml) {
         // Changes XML to JSON
         // https://davidwalsh.name/convert-xml-json
         // modified by Gareth Dunstone
@@ -2369,7 +2419,8 @@ export class ES6Player {
         }
         return obj;
     }
-    timecamFormatToTimestreamFormat(configXmlObject){
+
+    timecamFormatToTimestreamFormat(configXmlObject) {
         let shittyDateParse = (ds) => {
             try {
                 let shittyFormat = "M/D/YYYY h:m:s A";
@@ -2411,14 +2462,16 @@ export class ES6Player {
         timestreamDataObject.image_type = configXmlObject.datapresenter.components.timecam.image_type.toLowerCase();
         return timestreamDataObject;
     }
-    replaceUrl(input_data){
+
+    replaceUrl(input_data) {
         return input_data.replace(/webroot|filename|extension/gi, (match) => {
             if (match == 'webroot' && this.hires) match = "webroot_hires";
             if (match == 'filename' && this.hires) match = "filename_hires";
             return this.mapObj[match];
         });
     }
-    getRemainingHeight(selector){
+
+    getRemainingHeight(selector) {
         let s = (!selector) ? select(this.selector).node() : select(selector).node();
         if (typeof s !== 'object' || s == null) return window.innerHeight;
         // if (this.height > remainingHeight) remainingHeight = this.height + dimensions.timelineHeight;
@@ -2426,19 +2479,22 @@ export class ES6Player {
         let h = window.innerHeight - (s.getBoundingClientRect().top);
         return Math.max(480, h);
     }
-    parseOptsIntoMe(opts){
+
+    parseOptsIntoMe(opts) {
         // parse player options
         for (let key in opts) {
             if (opts.hasOwnProperty(key)) this[key] = opts[key];
         }
     }
-    createLog(){
+
+    createLog() {
         this.debug = console.debug.bind(window.console);
         this.log = console.log.bind(window.console);
         this.warn = console.warn.bind(window.console);
         this.error = console.error.bind(window.console);
     }
-    updateSpeedSliderTooltips(){
+
+    updateSpeedSliderTooltips() {
         let speed = this.speedMultiplier;
         let value = speed + "x normal speed";
         if (speed == 3600) value = "1 hour per second";
@@ -2446,7 +2502,8 @@ export class ES6Player {
         else if (speed == 43200) value = "1 month per minute";
         jQuery("." + this.speedSliderData.id).attr("title", value);
     };
-    customTimeInterval(x0,x1){
+
+    customTimeInterval(x0, x1) {
         let scaledMillis = (x1 - x0) / this.preloadAmount;
         for (let interval of intervalSetArray.slice().reverse()) {
             if (interval[0](scaledMillis)) return interval[1](x0, x1);
@@ -2454,6 +2511,5 @@ export class ES6Player {
     }
 
 }
-
 
 export default ES6Player;
