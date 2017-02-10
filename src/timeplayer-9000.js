@@ -1980,9 +1980,8 @@ export class ES6Player {
          * @param {number} topXvalue - desired x pixel location of the center of the slider handle
          * @param {number} index - index of frame, can be provided so that the extra calculation isnt neccesary.
          */
-        if (!isDefined(index)) {
-            index = this.timeToIndex(this.topXscale.invert(topXvalue));
-        }
+         index = isDefined(index)? index: this.timeToIndex(this.topXscale.invert(topXvalue));
+
 
         this.topAxisSliderHandle.transition().ease(easing.easePolyOut)
             .attr("cx", topXvalue);
@@ -2285,7 +2284,10 @@ export class ES6Player {
             let index = this.timeToIndex(m.toDate());
             this.log("opening", index);
             timeout(()=>{
-                this.updatePlayer(index, true);
+                this.frameChange(index);
+                this.currentFrameIndex = index;
+                this.updateSliderX(this.topXscale(this.timeToIndex.invert(index)), index);
+                this.updateSliderColors(index);
                 this.updateInfoBox();
             }, 250);
 
