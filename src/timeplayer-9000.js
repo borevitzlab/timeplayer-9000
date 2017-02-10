@@ -2241,9 +2241,7 @@ export class ES6Player {
             let index = this.timeToIndex(m.toDate());
             this.currentFrameIndex = index;
             select("#timeplayer-datetime-info").text(moment(this.timeToIndex.invert(index)).format(this.humanFormat));
-            // this.updateSliderX(this.topXscale(index), index);
-            this.frameChange(this.currentFrameIndex);
-            this.updatePlayer(index-2);
+            this.updatePlayer(this.currentFrameIndex, true);
 
         } else {
             this.viewer.addOnceHandler('open', () => {
