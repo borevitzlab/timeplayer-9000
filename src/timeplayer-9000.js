@@ -497,7 +497,6 @@ export class ES6Player {
             } else if (options.url.includes("xml")) {
                 xml(options.url, (err, data) => {
                     let timestreamConf = this.timecamFormatToTimestreamFormat(this.xmlToJson(data));
-                    this.debug(timestreamConf);
                     this.estimateTimelineData(timestreamConf);
                 });
             } else {
@@ -1551,15 +1550,10 @@ export class ES6Player {
                 if (!event.sourceEvent) return; // Only transition after input.
                 // if (!event.selection) return; // Ignore empty selections.
                 if (typeof event !== 'undefined' && event.sourceEvent) {
-                    if (event.selection === null && brushSelection(this.bottomBrushGroup.node()) === null) {
-                        let v = this.snapping == "None" ? "Month" : this.snapping;
-                        this.snapTo(v);
-                    }
-                    else {
-                        this.debug(event.sourceEvent.type, event);
-                        // if(event.sourceEvent.type != "click")
+                    if (event.selection === null && brushSelection(this.bottomBrushGroup.node()) === null)
+                        this.snapTo(this.snapping == "None" ? "Month" : this.snapping);
+                    else
                         this.snapTo(null);
-                    }
                 }
             });
 
