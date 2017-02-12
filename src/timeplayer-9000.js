@@ -508,11 +508,11 @@ export class ES6Player {
             if (options.url.split("?")[0].endsWith("json")) {
                 json(options.url, callback);
             }
-            else if (options.url.includes("xml")) {
+            else if (options.url.includes("xml")) {11
                 xml(options.url, (err, data) => callback(null, this.timecamFormatToTimestreamFormat(this.xmlToJson(data))));
             }
             else {
-                this.error("malformed url (supporting .json and .jsonp)");
+                this.error("malformed url (not .json or .xml)");
             }
         } else if (isDefined(options.jsonString)) {
             this.estimateTimelineData(JSON.parse(options.jsonString));
