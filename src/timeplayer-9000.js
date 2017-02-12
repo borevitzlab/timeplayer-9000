@@ -226,12 +226,12 @@ const customTimeFormat = (date) => {
      */
     return (
         time.timeSecond(date) < date ? formatMillisecond
-        : time.timeMinute(date) < date ? formatSecond
-        : time.timeHour(date) < date ? formatMinute
-        : time.timeDay(date) < date ? formatHour
-        : time.timeMonth(date) < date ? (time.timeWeek(date) < date ? formatDay : formatWeek)
-        : time.timeYear(date) < date ? formatMonth
-        : formatYear)
+            : time.timeMinute(date) < date ? formatSecond
+                : time.timeHour(date) < date ? formatMinute
+                    : time.timeDay(date) < date ? formatHour
+                        : time.timeMonth(date) < date ? (time.timeWeek(date) < date ? formatDay : formatWeek)
+                            : time.timeYear(date) < date ? formatMonth
+                                : formatYear)
     (date);
 };
 
@@ -505,13 +505,13 @@ export class ES6Player {
         if (isDefined(options.url)) {
             let callback = (err, data) => this.estimateTimelineData(data);
 
-            if (options.url.split("?")[0].endsWith("json")){
+            if (options.url.split("?")[0].endsWith("json")) {
                 json(options.url, callback);
             }
-            else if (options.url.includes("xml")){
+            else if (options.url.includes("xml")) {
                 xml(options.url, (err, data) => callback(null, this.timecamFormatToTimestreamFormat(this.xmlToJson(data))));
             }
-            else{
+            else {
                 this.error("malformed url (supporting .json and .jsonp)");
             }
         } else if (isDefined(options.jsonString)) {
@@ -526,7 +526,7 @@ export class ES6Player {
         this.viewer.addHandler("full-screen", () => this.rescaleTimeline());
 
         // add handler for resize
-        select(window).on("resize", ()=>this.rescaleTimeline());
+        select(window).on("resize", () => this.rescaleTimeline());
 
         // add document listner for dragdrop.
         jQuery(document).on('drag dragstart dragend dragover dragenter dragleave drop', this.selector, (event) => {
@@ -1671,8 +1671,8 @@ export class ES6Player {
         this.addSuccessAtIndex(this.timeToIndex(m.toDate()));
     }
 
-    updateInfoBox(){
-        let status = moment(this.timeToIndex.invert(this.currentFrameIndex)).format(this.humanFormat) +" "+this.viewer.imageLoader.jobsInProgress+(this.hires?"@hires" :"@lores");
+    updateInfoBox() {
+        let status = moment(this.timeToIndex.invert(this.currentFrameIndex)).format(this.humanFormat) + " " + this.viewer.imageLoader.jobsInProgress + (this.hires ? "@hires" : "@lores");
         select("#timeplayer-datetime-info").text(status);
     }
 
@@ -1983,7 +1983,7 @@ export class ES6Player {
          * @param {number} topXvalue - desired x pixel location of the center of the slider handle
          * @param {number} index - index of frame, can be provided so that the extra calculation isnt neccesary.
          */
-         index = isDefined(index)? index: this.timeToIndex(this.topXscale.invert(topXvalue));
+        index = isDefined(index) ? index : this.timeToIndex(this.topXscale.invert(topXvalue));
 
 
         this.topAxisSliderHandle.transition().ease(easing.easePolyOut)
@@ -2094,7 +2094,6 @@ export class ES6Player {
 
     rescaleTimeline() {
         select("#openseadragon-this.viewer").transition().style("height", String(this.getRemainingHeight() - 10) + "px");
-        this.log("rescaling");
         // dimensions.timelineWidth = jQuery("#timeplayer-timeline").width() || jQuery(window).width();
 
         // if (this.viewer.isFullPage()) {
@@ -2286,7 +2285,7 @@ export class ES6Player {
             let m = moment(params.i, this.timestreamParse);
             let index = this.timeToIndex(m.toDate());
             this.log("opening", index);
-            timeout(()=>{
+            timeout(() => {
                 this.frameChange(index);
                 this.currentFrameIndex = index;
                 this.updateSliderX(this.topXscale(this.timeToIndex.invert(index)), index);
@@ -2299,7 +2298,7 @@ export class ES6Player {
                 // this just ignores the first event and binds to any consecutive events.
                 this.viewer.addHandler('open', (event) => this.addSuccessForUrl(event.source.url));
             });
-            timeout(()=>{
+            timeout(() => {
                 this.loadDefaultImage();
             }, 250);
         }
