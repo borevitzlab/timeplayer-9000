@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Distritbution" type="js.build_tools.grunt" factoryName="Grunt.js" activateToolWindowBeforeRun="false">
+    <node-interpreter value="project" />
+    <gruntfile value="$PROJECT_DIR$/Gruntfile.js" />
+    <tasks>
+      <task value="default" />
+    </tasks>
+    <envs />
+    <method>
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Rollup" run_configuration_type="js.build_tools.npm" />
+    </method>
+  </configuration>
+</component>

@@ -3,6 +3,7 @@ import babel from 'rollup-plugin-babel';
 import postcss from "rollup-plugin-postcss";
 import json from "rollup-plugin-json";
 import cssnano from "cssnano";
+import prfx from "postcss-selector-prefix";
 
 export default {
     useStrict: true,
@@ -29,7 +30,8 @@ export default {
         postcss({
             extensions: ['.css'],
             plugins:[
-                cssnano()
+                cssnano(),
+                prfx(".timeplayer-styles")
             ]
         })
     ]

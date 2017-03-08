@@ -1667,6 +1667,14 @@
     "height": "16",
     "width": "14"
   },
+  "inside": {
+    "keywords": [
+      "mask"
+    ],
+    "path": "<path fill-rule=\"evenodd\" d=\"M0 0H1c-.55 0-1 .45-1 1v14c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V1c0-.55-.45-1-1-1zm7 3 H9V3h9v9h-11z\"/>",
+    "height": "18",
+    "width": "18"
+  },
   "watch": {
     "keywords": [
       "wait",

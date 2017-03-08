@@ -4,7 +4,7 @@
  */
 import 'jquery';
 import 'openseadragon';
-import '../node_modules/bootstrap/dist/css/bootstrap.css';
+import './timeplayer-9000.css';
 import moment from '../node_modules/moment/src/moment';
 import Dropdown from '../node_modules/bootstrap/js/src/dropdown';
 
@@ -32,14 +32,16 @@ import {brushX, brushSelection} from 'd3-brush';
 import {event, selection, select, selectAll, mouse} from 'd3-selection';
 import {transition} from 'd3-transition';
 
-window.time = time;
-window.timeFormat = timeFormat;
-
-
 // hijack selection
 selection.prototype.dropdown = function () {
     new Dropdown(this.node());
     return this;
+};
+
+const randomString = (length) => {
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    let f = () => possible.charAt(Math.floor(Math.random() * possible.length));
+    return Array.apply(null, new Array(length)).map(f).join("");
 };
 
 function attrsFunction(s, map) {
@@ -183,14 +185,6 @@ const initLog = () => {
         };
 };
 
-const timeInterval = (interval, amount) => {
-    return (date) => {
-        let subHalf = interval.offset(date, -amount / 2);
-        let addHalf = interval.offset(date, amount / 2);
-        return interval.range(subHalf, addHalf, amount)[0];
-    }
-};
-
 const everyInterval = (interval, amount) => {
     return interval.every(amount).range;
 };
@@ -209,7 +203,6 @@ const seconds = (n) => n * 1000,
     everyWeeks = (n) => everyInterval(time.timeWeek, n),
     everyMonths = (n) => everyInterval(time.timeMonth, n),
     everyYears = (n) => everyInterval(time.timeYear, n);
-
 
 const formatMillisecond = timeFormat(".%L"),
     formatSecond = timeFormat("%H:%M:%S"),
@@ -269,7 +262,7 @@ export class ES6Player {
         this.numTimePoints = 0;
         this.compositeOperation = "source-over";
         this.selector = "#timeplayer-9000";
-        this.viewerId = Math.random().toString(36).substr(2, 5);
+        this.viewerId = randomString(8);
         this.snapping = "None";
         this.playing = false;
         this.period = 300;
@@ -353,10 +346,16 @@ export class ES6Player {
                 title: "Toggle Fullscreen",
                 octicon: octicons.screennormal,
                 octiconWait: octicons.screenfull,
-                clickedCallback: () => {
-                    this.viewer.setFullScreen(!this.viewer.isFullPage());
-                }
+                clickedCallback: () => this.viewer.setFullScreen(!this.viewer.isFullPage())
+            },
+            maskViewButton: {
+                id: "maskview-button",
+                title: "Set Mask image (hold ctrl for mouseover)",
+                octicon: octicons.inside,
+                octiconWait: octicons.inside,
+                clickedCallback: () => this.setMaskImage()
             }
+
         };
         this.hiresButton = {
             id: "hires-button",
@@ -399,7 +398,7 @@ export class ES6Player {
                 this.redrawPaths();
                 this.updateAxisScales();
                 this.updateGradients();
-
+                this.updateInfoBox();
                 this.updatePlayer(this.currentFrameIndex, true);
                 jQuery("#" + this.hiresButton.id).attr("title", this.hires ? "High Resolution" : "Low Resolution");
             }
@@ -508,7 +507,7 @@ export class ES6Player {
             if (options.url.split("?")[0].endsWith("json")) {
                 json(options.url, callback);
             }
-            else if (options.url.includes("xml")) {11
+            else if (options.url.includes("xml")) {
                 xml(options.url, (err, data) => callback(null, this.timecamFormatToTimestreamFormat(this.xmlToJson(data))));
             }
             else {
@@ -524,9 +523,15 @@ export class ES6Player {
         this.log("Adding listeners...");
         // add fullscreen resize handler.
         this.viewer.addHandler("full-screen", () => this.rescaleTimeline());
+        this.viewer.addOnceHandler("open", () => {
+            selectAll("canvas").on("mousemove", (d) => {
+                if (event.ctrlKey && !this.maskIndicatorLine.attr("hidden")) this.drawMask(event.x, event.y);
+            });
+        });
 
         // add handler for resize
         select(window).on("resize", () => this.rescaleTimeline());
+
 
         // add document listner for dragdrop.
         jQuery(document).on('drag dragstart dragend dragover dragenter dragleave drop', this.selector, (event) => {
@@ -753,7 +758,7 @@ export class ES6Player {
 
     createViewer() {
         // create container
-        jQuery("<div id='" + this.viewerId + "'></div>")
+        jQuery("<div id='" + this.viewerId + "' class='timeplayer-styles'></div>")
             .css("height", "" + this.getRemainingHeight() - 10 + "px")
             .css("width", "100%")
             .appendTo(this.selector);
@@ -905,9 +910,11 @@ export class ES6Player {
             };
             // this is the bit which was changed to allow better queueing.
             let t = timer(() => {
-                if (this.world._items.length > 2 && this.world._items[1]._hasOpaqueTile) {
-                    this.world._items.shift().destroy();
-                    if (this.world._items[1]._hasOpaqueTile) t.stop();
+                if (this.world._items.length > 3 && this.world._items[2]._hasOpaqueTile) {
+                    // leave the one that is the lowest.
+                    this.world._items.splice(1, 1)[0].destroy();
+                    // this.world._items.shift().destroy();
+                    if (this.world._items[2]._hasOpaqueTile) t.stop();
                 }
             });
             this.addTiledImage(options);
@@ -948,6 +955,38 @@ export class ES6Player {
              */
             this.addErrorForUrl(event.source.url);
         });
+    }
+
+    drawMask(mx, my) {
+
+        [mx, my] = mouse(event.srcElement);
+        let [ctx, cvs, wld] = [this.viewer.drawer.context, this.viewer.drawer.canvas, this.viewer.world];
+        let half_size = 200;
+        if (wld.getItemCount() < 2) return;
+        ctx.save();
+        wld.getItemAt(wld.getItemCount() - 1).draw();
+        ctx.beginPath();
+        ctx.rect(mx + half_size, my - half_size, -half_size * 2, half_size * 2);
+        ctx.clip();
+        ctx.closePath();
+        wld.getItemAt(0).draw();
+        ctx.beginPath();
+        ctx.strokeRect(mx + half_size, my - half_size, -half_size * 2, half_size * 2);
+        ctx.closePath();
+        ctx.restore();
+    }
+
+    setMaskImage() {
+        let wld = this.viewer.world;
+        let item = wld.getItemAt(wld.getItemCount() - 1);
+        wld._items[0] = item;
+        this.maskIndicatorLine
+            .attr("hidden", null)
+            .attrs({
+                "x1": this.botXscale(this.timeToIndex.invert(this.currentFrameIndex)),
+                "x2": this.botXscale(this.timeToIndex.invert(this.currentFrameIndex))
+            });
+        // wld.setItemIndex(item, 0);
     }
 
     initUI(selector) {
@@ -1395,6 +1434,7 @@ export class ES6Player {
             })
             .style("stroke-width", this.dimensions.bottomHeight * 0.5);
 
+
         this.botLineGradient = this.svg.append("linearGradient")
             .attrs({
                 "id": "botLineGradient",
@@ -1415,6 +1455,16 @@ export class ES6Player {
                 "offset": (d) => this.offsetScale(d.index),
                 "stop-color": (d) => this.colorSelect(this.name),
                 "stop-opacity": 0.3
+            });
+
+        this.maskIndicatorLine = this.botGroup.append("line")
+            .style("stroke-width", "3px")
+            .style("opacity", 1)
+            .style("stroke", "red")
+            .attr("hidden", true)
+            .attrs({
+                "y1": 0,
+                "y2": this.dimensions.botY
             });
 
         this.topLineGradient = this.svg.append("linearGradient")
@@ -1516,6 +1566,7 @@ export class ES6Player {
                 "y1": this.dimensions.topAxisY + this.dimensions.axisHeight,
                 "y2": this.dimensions.botY
             });
+
 
         let topAxisSliderHandleRadius = () => -3 + this.dimensions.axisHeight / 2;
         this.topAxisSliderHandle = this.topAxisSlider.append("circle")
@@ -1672,7 +1723,7 @@ export class ES6Player {
     }
 
     updateInfoBox() {
-        let status = moment(this.timeToIndex.invert(this.currentFrameIndex)).format(this.humanFormat) + " " + this.viewer.imageLoader.jobsInProgress + (this.hires ? "@hires" : "@lores");
+        let status = moment(this.timeToIndex.invert(this.currentFrameIndex)).format(this.humanFormat) + " " +(this.hires ? "High Res" : "Low Res");
         select("#timeplayer-datetime-info").text(status);
     }
 
@@ -1776,10 +1827,8 @@ export class ES6Player {
 
         let t = timer(() => {
             select("#loadingStop").attr("offset", () => Math.floor((this.viewer.imageLoader.jobsInProgress / this.preloadAmount) * 100) + "%");
-            this.updateInfoBox();
-            if (this.viewer.imageLoader.jobsInProgress === 0) {
-                this.loaded = true;
-            }
+            // this.updateInfoBox();
+            this.loaded = this.viewer.imageLoader.jobsInProgress === 0;
             if (this.loaded) t.stop();
         });
     }
@@ -1863,7 +1912,7 @@ export class ES6Player {
         // smooth slider
         this.updateSliderX(this.topXscale(this.timeToIndex.invert(input)), index);
         this.updateSliderColors(index);
-        this.updateInfoBox();
+        // this.updateInfoBox();
     }
 
     updatePlayState() {
@@ -2203,7 +2252,6 @@ export class ES6Player {
         this.botLineEle.data(this.lines_mapped).attr("d", (d) => this.botLine(d.values));
     }
 
-
     loadDefaultImage() {
         let idx = Math.floor(this.timeToIndex(this.end) / 2);
         this.updatePlayer(idx);
@@ -2290,7 +2338,7 @@ export class ES6Player {
                 this.currentFrameIndex = index;
                 this.updateSliderX(this.topXscale(this.timeToIndex.invert(index)), index);
                 this.updateSliderColors(index);
-                this.updateInfoBox();
+                // this.updateInfoBox();
             }, 250);
 
         } else {

@@ -1,14 +1,21 @@
 {
   "name": "timeplayer-9000",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "A javascript timelapse player. Aims to be html5 and ECMAScript5 compatible, with minimal dependencies",
   "main": "index.js",
   "scripts": {
     "rollup": "rollup -c && cp build/rolled.js dist/timeplayer-9000.rld.js && cp dist/* ../site-phenocam-org/www/static/js/dist/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/borevitzlab/timeplayer-9000.git"
+  },
   "keywords": [
     "timelapse"
   ],
+  "bugs": {
+    "url": "https://github.com/borevitzlab/timeplayer-9000/issues"
+  },
   "author": "Gareth Dunstone",
   "license": "GPL-3.0",
   "devDependencies": {
@@ -34,6 +41,8 @@
     "jquery": "^3.1.1",
     "moment": "^2.17.1",
     "openseadragon": "^2.2.1",
+    "postcss-class-prefix": "^0.3.0",
+    "postcss-selector-prefix": "^2.1.0",
     "rollup": "0.36",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^6.0.0",
