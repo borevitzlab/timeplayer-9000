@@ -302,3 +302,10 @@ flycheck_*.el
 
 # projectiles files
 .projectile
+
+
+
+
+/electron-forge/*
+/electron-packager/*
+/compileCache_*/*
