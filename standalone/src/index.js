@@ -1,4 +1,6 @@
-import { app, BrowserWindow } from 'electron';
+import {protocol, Menu, app, BrowserWindow } from 'electron';
+
+var path = require('path');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -7,17 +9,19 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+var mainWindow;
 
-const createWindow = () => {
+var createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    title: 'Time Player 9000',
+    resizable: true,
     width: 900,
-    height: 800,
+    height: 700,
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  mainWindow.loadURL(`appy://index.html`);
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();
@@ -34,7 +38,34 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {  
+
+  var mMenu = [
+  {
+      label: 'reload',
+      role: 'reload'
+  },
+  {
+    label: 'debug',
+    role: 'toggledevtools'
+  }
+  ];
+
+  var menu = Menu.buildFromTemplate(mMenu);
+  Menu.setApplicationMenu(menu);
+
+  protocol.registerFileProtocol('appy', (request, callback) => {
+    var url = request.url.substr(7);
+    callback({path: path.normalize(`${__dirname}/${url}`)});
+  }, (error) => {
+    if(error)
+      console.error('Failed to register protocol')
+  })
+
+
+  createWindow();
+
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -55,3 +86,6 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+
+
