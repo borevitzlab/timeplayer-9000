@@ -1,4 +1,4 @@
-import {protocol, Menu, app, BrowserWindow } from 'electron';
+import {protocol, Menu, app, BrowserWindow, globalShortcut } from 'electron';
 
 var path = require('path');
 
@@ -35,6 +35,8 @@ var createWindow = () => {
   });
 };
 
+protocol.registerStandardSchemes(['tc']);
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -59,9 +61,22 @@ app.on('ready', () => {
     callback({path: path.normalize(`${__dirname}/${url}`)});
   }, (error) => {
     if(error)
-      console.error('Failed to register protocol')
-  })
+      console.error('Failed to register protocol 0');
+  });
 
+  protocol.registerHttpProtocol('tc', (request, callback) => {
+    var url = request.url.substr(5);
+    callback({url: 'https://traitcapture.org/api/v3/config/by-id/' + url});
+  }, (error) => {
+    if(error)
+      console.error('Failed to register protocol 0');
+  });
+
+  
+
+  globalShortcut.register('CommandOrControl+N', () => {
+    
+  });
 
   createWindow();
 

@@ -32,10 +32,34 @@
 
     <script type="text/javascript">
     
+      var ipcRenderer = require('electron').ipcRenderer;
+      ipcRenderer.on('TimePlayer-data', function (data) {
+          console.log(data);
+      });
+
+      function LoadTimePlayer(dataPath)
+      {
+
+        window.timeplayer = null;
+
         window.timeplayer = new TimePlayer.ES6Player({
-        url: 'https://traitcapture.org/api/v3/config/by-id/565d04dad13144392ffb8322.json',
-        showRoiControls:true
-    });
+          url: dataPath,
+          showRoiControls:true
+      });
+
+      console.log(dataPath);
+
+      }
+
+      function ReLoadTimePlayer()
+      {
+
+        LoadTimePlayer(window.timeplayer.url);
+
+      }
+
+      LoadTimePlayer('https://traitcapture.org/api/v3/config/by-id/565d04dad13144392ffb8322.json');
+
     
   </script>
   </body>

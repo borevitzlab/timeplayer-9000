@@ -309,3 +309,4 @@ flycheck_*.el
 /electron-forge/*
 /electron-packager/*
 /compileCache_*/*
+/compile*
