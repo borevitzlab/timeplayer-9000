@@ -344,8 +344,8 @@ export class ES6Player {
             fullscreenButton: {
                 id: "fullscreen-button",
                 title: "Toggle Fullscreen",
-                octicon: octicons.screennormal,
-                octiconWait: octicons.screenfull,
+                octicon: octicons.screenfull,
+                octiconWait: octicons.screennormal,
                 clickedCallback: () => this.viewer.setFullScreen(!this.viewer.isFullPage())
             },
             maskViewButton: {

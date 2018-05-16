@@ -14,6 +14,7 @@ var mainWindow;
 var createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    backgroundColor: '#000',
     title: 'Time Player 9000',
     resizable: true,
     width: 900,
@@ -73,6 +74,9 @@ app.on('ready', () => {
   });
 
   
+  globalShortcut.register('CommandOrControl+R', () => {
+    mainWindow.webContents.send("TimePlayer-reload", "boop");
+  });
 
   globalShortcut.register('CommandOrControl+N', () => {
     

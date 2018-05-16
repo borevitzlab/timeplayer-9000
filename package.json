@@ -4,7 +4,7 @@
   "description": "A javascript timelapse player. Aims to be html5 and ECMAScript5 compatible, with minimal dependencies",
   "main": "index.js",
   "scripts": {
-    "rollup": "rollup -c && cp build/rolled.js dist/timeplayer-9000.rld.js && cp dist/* ../site-phenocam-org/www/static/js/dist/"
+    "rollup": "rollup -c && cp build/rolled.js dist/timeplayer-9000.rld.js"
   },
   "repository": {
     "type": "git",
