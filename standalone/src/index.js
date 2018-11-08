@@ -22,7 +22,7 @@ var createWindow = () => {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL(`appy://index.html`);
+  mainWindow.loadURL("appy://index.html");
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();
@@ -67,7 +67,7 @@ app.on('ready', () => {
 
   protocol.registerHttpProtocol('tc', (request, callback) => {
     var url = request.url.substr(5);
-    callback({url: 'https://traitcapture.org/api/v3/config/by-id/' + url});
+    callback({url: 'https://traitcapture.org/api/v3/config/by-id/' + url + '.json'});
   }, (error) => {
     if(error)
       console.error('Failed to register protocol 0');

@@ -6,6 +6,7 @@
 
 
     <script src="appy://js/jquery.js"></script>  
+    <!--
     <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/2.3.1/openseadragon.min.js" integrity="sha256-n4ByW+cPTjRPlgHTEuQ27tZfn/ffdkmZWW7J7GP6YvM=" crossorigin="anonymous"></script>
 
     <script src="https://traitcapture.org/static/js/openseadragon-selection.js"></script>
@@ -14,6 +15,9 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-queue/3.0.7/d3-queue.min.js" integrity="sha256-BUeQcbeHGtOD0tfPelPN+k+dX9fDwzXAA7qHwPH92HA=" crossorigin="anonymous"></script>
+    -->
+    <script type="text/javascript" src="appy://js/dist/plugins.cls.js"></script>
+    <script type="text/javascript" src="appy://js/dist/custom.cls.js"></script>
     <script src="appy://js/timeplayer-9000.rld.js"></script>        
     
     <style>
@@ -26,7 +30,10 @@
 
   </head>
   <body>
-
+        <div class="tha-picker">
+        <input type="text" class="form-control" id="purl">
+        <button class="btn btn-primary" onclick="LoadTimePlayer($('#purl').val());">load</button>
+        </div>
         <div class="timeplayer-panel">
             <div id="timeplayer-9000"></div>
         </div>
@@ -38,19 +45,45 @@
           console.log(data);
       });
 
+      ipcRenderer.on('TimePlayer-change', function (data) {
+        if(data !== 'popup')
+        {}
+        else
+        {
+
+          $('.tha-picker').show();
+
+        }
+      });
+
       ipcRenderer.on('TimePlayer-reload', function (data) {
         ReLoadTimePlayer();
       });
 
       function LoadTimePlayer(dataPath)
       {
+        
+        if(dataPath == null)
+        {
+
+          return;
+
+        }
+        $('.tha-picker').hide();
+        if(!dataPath.includes('://'))
+        {
+
+
+          dataPath = 'https://traitcapture.org/api/v3/config/by-id/' + dataPath + '.json'
+
+        }
 
         window.timeplayer = null;
 
         window.timeplayer = new TimePlayer.ES6Player({
           url: dataPath,
           showRoiControls:true
-      });
+        });
 
       console.log(window.timeplayer);
       console.log(dataPath);
@@ -59,9 +92,10 @@
 
       function ReLoadTimePlayer()
       {
-
+        if(typeof window.timeplayer.url !== "undefined"){
         $("#timeplayer-9000").html("");
         LoadTimePlayer(window.timeplayer.url);
+        }
 
       }
 
@@ -69,7 +103,7 @@
         ReLoadTimePlayer();
       });
 
-      LoadTimePlayer('https://traitcapture.org/api/v3/config/by-id/565d04dad13144392ffb8322.json');
+      //LoadTimePlayer('https://traitcapture.org/api/v3/config/by-id/565d04dad13144392ffb8322.json');
 
     
   </script>
