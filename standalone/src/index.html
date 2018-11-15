@@ -26,13 +26,38 @@
           padding: 3px 3px;
       }
   
+      input {
+
+        border-radius: 13px;
+        border: none;
+        padding: 15px 32px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+
+      }
+
+      button {
+
+        border-radius: 13px;
+        background-color: #4CAF50; 
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+
+      }
+
     </style>
 
   </head>
   <body>
         <div class="tha-picker">
-        <input type="text" class="form-control" id="purl">
-        <button class="btn btn-primary" onclick="LoadTimePlayer($('#purl').val());">load</button>
+        <input type="text" id="purl">
+        <button onclick="LoadTimePlayer($('#purl').val());">load</button>
         </div>
         <div class="timeplayer-panel">
             <div id="timeplayer-9000"></div>
